@@ -22,7 +22,7 @@ class _SignInState extends State<SignIn> {
       key: _formkey,
       child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
         Text("Triveous News",style: TextStyle(fontSize: 30,fontWeight: FontWeight.bold),),
-        Image(image: AssetImage('assets/images/Logo.PNG')),
+        Image(image: AssetImage('assets/images/Logo.png')),
 
 
         SizedBox(height: 20),
