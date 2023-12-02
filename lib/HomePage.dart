@@ -22,6 +22,8 @@ class _HomePageState extends State<HomePage> {
 
   }
 
+  bool isGrid=false;
+
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +37,13 @@ class _HomePageState extends State<HomePage> {
           TextStyle(fontWeight: FontWeight.w500, color: Colors.black),
           backgroundColor: Colors.white,
           actions: <Widget>[
+            Switch(value: isGrid,
+                activeColor: Colors.blue,
+                onChanged:(value){
+              setState(() {
+                isGrid=value;
+              });
+                }),
             IconButton(
                 icon: Icon(Icons.logout,color: Colors.black,),
                 onPressed: () async {
@@ -43,67 +52,134 @@ class _HomePageState extends State<HomePage> {
           ]),
       body: Consumer<NewsProvider>(builder: (context, value, child) {
         List<News> res = value.getlist();
-        return ListView.separated(
+        return (isGrid) ?
+        GridView.builder(
+          itemCount: res.length,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 4.0,
+              mainAxisSpacing: 4.0,
+              mainAxisExtent: 350,
+
+          ),
+          itemBuilder: (BuildContext context, int index){
+    if(res[index].imgurl=="null"){
+
+    return Container();
+    }else{
+    return InkWell(
+    onTap: (){
+    News n=News(title: res[index].title, imgurl: res[index].imgurl, description: res[index].description, content: res[index].content);
+    Navigator.push(context, MaterialPageRoute(builder: (context)=>NewsDetails(news: n)));
+    },
+    child: Card(
+
+    shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(8),
+
+    ),
+
+    clipBehavior: Clip.antiAliasWithSaveLayer,
+
+    child: Column(
+
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: <Widget>[
+
+    Image.network(
+    res[index].imgurl,
+    height: 140,
+    width: double.infinity,
+    fit: BoxFit.cover,
+
+    ),
+
+    Container(
+    padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
+    child: Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: <Widget>[
+
+    Text(
+    res[index].title,
+    style: TextStyle(
+    fontSize: 15,
+    color: Colors.grey[700],
+    ),
+    ),
+
+    ],
+    ),
+    ),
+
+    Container(height: 5),
+    ],
+    ),
+    ),
+    );
+    }
+    })
+                : ListView.separated(
             itemBuilder: (context, index) {
-              print(res[index].imgurl=="null");
-              if(res[index].imgurl=="null"){
+            print(res[index].imgurl=="null");
+            if(res[index].imgurl=="null"){
 
-                return Container();
-              }else{
-                return InkWell(
-                  onTap: (){
-                    News n=News(title: res[index].title, imgurl: res[index].imgurl, description: res[index].description, content: res[index].content);
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>NewsDetails(news: n)));
-                  },
-                  child: Card(
+            return Container();
+            }else{
+            return InkWell(
+            onTap: (){
+            News n=News(title: res[index].title, imgurl: res[index].imgurl, description: res[index].description, content: res[index].content);
+            Navigator.push(context, MaterialPageRoute(builder: (context)=>NewsDetails(news: n)));
+            },
+            child: Card(
 
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
+            shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+            ),
 
-                    clipBehavior: Clip.antiAliasWithSaveLayer,
+            clipBehavior: Clip.antiAliasWithSaveLayer,
 
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
+            child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
 
-                        Image.network(
-                          res[index].imgurl,
-                          height: 160,
-                          width: double.infinity,
-                          fit: BoxFit.cover,
+            Image.network(
+            res[index].imgurl,
+            height: 160,
+            width: double.infinity,
+            fit: BoxFit.cover,
 
-                        ),
+            ),
 
-                        Container(
-                          padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
+            Container(
+            padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
+            child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
 
-                              Text(
-                                res[index].title,
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  color: Colors.grey[700],
-                                ),
-                              ),
+            Text(
+            res[index].title,
+            style: TextStyle(
+            fontSize: 20,
+            color: Colors.grey[700],
+            ),
+            ),
 
-                            ],
-                          ),
-                        ),
+            ],
+            ),
+            ),
 
-                        Container(height: 5),
-                      ],
-                    ),
-                  ),
-                );
+            Container(height: 5),
+            ],
+            ),
+            ),
+            );
 
-              }
+            }
 
             },
             separatorBuilder: (context, index) {
-              return SizedBox(height: 7);
+            return SizedBox(height: 7);
             },
             itemCount: res.length);
       }),
